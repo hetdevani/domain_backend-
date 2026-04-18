@@ -7,28 +7,43 @@ import { SeederConfig } from '../interfaces/ISeeder';
 import RoleService from '../../Role/services/RoleService';
 import CommonService from '../../common/services/CommonService';
 import logger from '../../common/services/WinstonLogger';
+import '../../Master/models/Master';
+import '../../Role/models/Role';
+import '../../SeriesGenerator/models/SeriesGenerator';
+import '../../Setting/models/Setting';
+import '../../StaticPage/models/StaticPage';
+import '../../User/models/User';
 
 class SeederService {
 
-    async seedDatabase(): Promise<void> {
+    async seedDatabase(): Promise<{ processedFiles: number; insertedRecords: number; perModel: Record<string, number> }> {
         const seederDirectory = path.join(__dirname, '../../../../', 'Seeder-Data');
         logger.info('seederDirectory', { data: seederDirectory });
 
         let files = await fs.readdirSync(seederDirectory);
+        let insertedRecords = 0;
+        let processedFiles = 0;
+        const perModel: Record<string, number> = {};
 
         for (const file of files) {
             const modelName = path.basename(file, '.json');
             const data = require(path.join(seederDirectory, file));
 
             if (modelName !== 'User') {
-                await this.seedData(modelName, data);
+                const insertedCount = await this.seedData(modelName, data);
+                insertedRecords += insertedCount;
+                processedFiles++;
+                perModel[modelName] = insertedCount;
             }
         }
+
+        return { processedFiles, insertedRecords, perModel };
     }
 
-    private async seedData(modelName: string, data: any): Promise<void> {
+    private async seedData(modelName: string, data: any): Promise<number> {
         // logger.info('modelName', { data: modelName });
         const model = mongoose.model(modelName);
+        let insertedCount = 0;
 
         // logger.info('model', { data: model });
         const seederConfig = SEEDER_DATA_CONFIG[modelName as keyof SeederConfig]; // Type assertion
@@ -43,6 +58,7 @@ class SeederService {
 
             if (!existingItem || !existingItem._id) {
                 await model.create(item);
+                insertedCount++;
                 // logger.info(`Inserted ${item[uniqueField]} record into ${modelName} collection`);
             } else {
                 if (modelName === 'Role') {
@@ -74,28 +90,20 @@ class SeederService {
             }
         }
 
+        return insertedCount;
     }
 
-    public async seedUsers(): Promise<void> {
+    public async seedUsers(): Promise<{ insertedUsers: number; skippedUsers: number }> {
         const userFilePath = path.join(__dirname, '../../../../', 'Seeder-Data', 'User.json');
-
-        fs.readFile(userFilePath, 'utf8', async (err, data) => {
-            if (err) {
-                logger.error('Error reading User.json:', { error: err });
-                return;
-            }
-
-            try {
-                const userData = JSON.parse(data);
-                await this.seedUserData(userData);
-            } catch (parseError) {
-                logger.error('Error parsing User.json:', { error: parseError });
-            }
-        });
+        const data = await fs.promises.readFile(userFilePath, 'utf8');
+        const userData = JSON.parse(data);
+        return this.seedUserData(userData);
     }
 
-    private async seedUserData(records: any): Promise<void> {
+    private async seedUserData(records: any): Promise<{ insertedUsers: number; skippedUsers: number }> {
         const userModel = mongoose.model('User');
+        let insertedUsers = 0;
+        let skippedUsers = 0;
 
         // logger.info('seedUserData records', { data: records });
         for (let data of records) {
@@ -111,18 +119,36 @@ class SeederService {
                 logger.info('Seeding user data...');
                 data = await CommonService.assignSeriesData(data, 'User');
                 await userModel.create(data);
+                insertedUsers++;
             } else {
                 logger.info(`User ${data.email} already exists`);
+                skippedUsers++;
 
                 continue;
             }
         }
+
+        return { insertedUsers, skippedUsers };
     }
 
-    public async seederConfig(): Promise<void> {
+    public async seederConfig(): Promise<{
+        processedFiles: number;
+        insertedRecords: number;
+        perModel: Record<string, number>;
+        insertedUsers: number;
+        skippedUsers: number;
+    }> {
         // logger.info('seederConfig');
-        await this.seedDatabase();
-        await this.seedUsers();
+        const databaseResult = await this.seedDatabase();
+        const userResult = await this.seedUsers();
+
+        const result = {
+            ...databaseResult,
+            ...userResult,
+        };
+
+        logger.info('Seeder completed', result);
+        return result;
     }
 }
 

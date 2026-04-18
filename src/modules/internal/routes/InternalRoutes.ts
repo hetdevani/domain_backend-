@@ -20,8 +20,8 @@ const rejectUnauthorized = (res: Response) =>
 
 router.post('/seed', async (req: Request, res: Response) => {
     try {
-        await SeederService.seederConfig();
-        return res.status(200).json({ ok: true, message: 'Seeder completed' });
+        const result = await SeederService.seederConfig();
+        return res.status(200).json({ ok: true, message: 'Seeder completed', result });
     } catch (error: any) {
         logger.error('Seeder route failed', { error });
         return res.status(500).json({ ok: false, message: error?.message || 'Seeder failed' });
