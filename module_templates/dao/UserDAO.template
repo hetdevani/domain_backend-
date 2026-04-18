@@ -1,0 +1,11 @@
+import { I{{moduleName}} } from '../interfaces/I{{moduleName}}';
+import { BaseDAO } from '../../common/dao/BaseDAO';
+import { {{moduleName}} } from '../models/{{moduleName}}';
+
+export class {{moduleName}}DAO extends BaseDAO<I{{moduleName}}> {
+    constructor() {
+        super({{moduleName}});
+    }
+}
+
+export default {{moduleName}}DAO;

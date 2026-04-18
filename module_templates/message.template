@@ -1,0 +1,10 @@
+// You can add specific messages related to {{moduleName}} here
+
+export const messages = {
+    OK: {
+        code: 'OK',
+        message: 'OK.',
+        status: 200
+    }
+    // ... more {{moduleName}} related messages
+}

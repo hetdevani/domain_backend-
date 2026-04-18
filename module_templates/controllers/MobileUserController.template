@@ -1,0 +1,28 @@
+import { Request, Response } from 'express';
+import { I{{moduleName}} } from '../interfaces/I{{moduleName}}';
+import {{moduleName}}Service from '../services/{{moduleName}}Service';
+import { messages } from '../message';
+import { SuccessResponseHandler } from '../../common/response/successResponse';
+import { ErrorResponseHandler } from '../../common/response/errorResponse';
+
+export class Mobile{{moduleName}}Controller {
+    public async testFun(req: Request, res: Response) {
+        try {
+            const {{moduleVariable}}Data: any = req.body;
+            const data = await {{moduleName}}Service.find({{moduleVariable}}Data);
+            return SuccessResponseHandler.sendSuccessResponse(res, messages.OK, data);
+        } catch (error: any) {
+            return ErrorResponseHandler.sendErrorResponse(res, error);
+        }
+    }
+
+    public async list(req: Request, res: Response) {
+        try {
+            const {{moduleVariable}}Data = req.body;
+            const data = await {{moduleName}}Service.find({{moduleVariable}}Data);
+            return SuccessResponseHandler.sendSuccessResponse(res, messages.OK, data);
+        } catch (error: any) {
+            return ErrorResponseHandler.sendErrorResponse(res, error);
+        }
+    }
+}

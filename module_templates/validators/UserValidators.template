@@ -1,0 +1,16 @@
+import Joi from 'joi';
+import { I{{moduleName}} } from '../interfaces/I{{moduleName}}';
+import { CommonValidator } from '../../common/validator/CommonValidator';
+
+export class {{moduleName}}Validators extends CommonValidator {
+
+    public static readonly create{{moduleName}}Schema = Joi.object<I{{moduleName}}>({
+        // Add fields here for creating {{moduleName}}. Example:
+        // fieldName: Joi.type().rules(),
+    });
+
+    public static readonly update{{moduleName}}Schema = Joi.object<Partial<I{{moduleName}}>>({
+        // Add fields here for updating {{moduleName}}. Example:
+        // fieldName: Joi.type().rules(),
+    });
+}

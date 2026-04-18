@@ -1,0 +1,9 @@
+import { BaseController } from '../../common/controller/BaseController';
+import { I{{moduleName}} } from '../interfaces/I{{moduleName}}';
+import {{moduleName}}Service from '../services/{{moduleName}}Service';
+
+export class Web{{moduleName}}Controller extends BaseController<I{{moduleName}}> {
+    constructor() {
+        super({{moduleName}}Service, '{{moduleName}}');
+    }
+}

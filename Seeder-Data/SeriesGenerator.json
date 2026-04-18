@@ -1,0 +1,32 @@
+[
+    {
+        "name": "User",
+        "startFrom": 1,
+        "digitLength": 6,
+        "prefix": "MA",
+        "postfix": "ER",
+        "totalEntry": 0,
+        "isActive": true,
+        "type": 1
+    },
+    {
+        "name": "User",
+        "startFrom": 1,
+        "digitLength": 6,
+        "prefix": "AD",
+        "postfix": "UR",
+        "totalEntry": 0,
+        "isActive": true,
+        "type": 2
+    },
+    {
+        "name": "User",
+        "startFrom": 1,
+        "digitLength": 6,
+        "prefix": "CS",
+        "postfix": "UR",
+        "totalEntry": 0,
+        "isActive": true,
+        "type": 3
+    }
+]

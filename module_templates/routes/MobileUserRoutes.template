@@ -1,0 +1,51 @@
+import { Router } from 'express';
+import { Mobile{{moduleName}}Controller } from '../controllers/Mobile{{moduleName}}Controller';
+import { {{moduleName}}Validators } from '../validators/{{moduleName}}Validators';
+import { RouteConfig, ValidationMiddleware } from '../../common/middleware/validationMiddleware';
+import AppPermissionMiddleware from '../../common/middleware/appPermissionMiddleware';
+
+class Mobile{{moduleName}}Routes {
+    public router: Router;
+    private controller: Mobile{{moduleName}}Controller;
+    private routeConfigs: RouteConfig[];
+    private appPermissionMiddleware: AppPermissionMiddleware;
+
+    constructor() {
+        this.router = Router();
+        this.controller = new Mobile{{moduleName}}Controller();
+        this.appPermissionMiddleware = new AppPermissionMiddleware();
+        this.routeConfigs = [
+            {
+                path: '/',
+                method: 'post',
+                middlewares: [
+                    this.appPermissionMiddleware.checkAppPermission(),
+                    ValidationMiddleware.validateRequest({{moduleName}}Validators.create{{moduleName}}Schema)
+                ],
+                handler: this.controller.testFun.bind(this.controller),
+            },
+            {
+                path: '/list',
+                method: 'post',
+                middlewares: [
+                    this.appPermissionMiddleware.checkAppPermission(),
+                ],
+                handler: this.controller.list.bind(this.controller),
+            }
+        ];
+        this.configureRoutes();
+    }
+
+    private configureRoutes(): void {
+        this.routeConfigs.forEach((routeConfig) => {
+            const { method, path, middlewares, handler } = routeConfig;
+            if (middlewares && middlewares.length > 0) {
+                this.router[method](path, middlewares, handler);
+            } else {
+                this.router[method](path, handler);
+            }
+        });
+    }
+}
+
+export default new Mobile{{moduleName}}Routes().router;

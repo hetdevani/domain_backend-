@@ -1,0 +1,22 @@
+[
+    {
+        "name": "admin",
+        "password": "Admin@2026$#@!&*",
+        "email": "admin@admin.com",
+        "countryCode": "+91",
+        "mobile": "7779077010",
+        "type": 1,
+        "isActive": true,
+        "isDeleted": false
+    },
+    {
+        "name": "master",
+        "password": "Master@2026$#@!&*",
+        "email": "master@master.com",
+        "countryCode": "+91",
+        "mobile": "7779077011",
+        "type": 1,
+        "isActive": true,
+        "isDeleted": false
+    }
+]

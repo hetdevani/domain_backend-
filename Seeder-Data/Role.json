@@ -1,0 +1,214 @@
+[
+    {
+        "title": "master_admin",
+        "userType": 1,
+        "permissions": [
+            {
+                "module": 1,
+                "name": "USER",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": true,
+                    "update": true,
+                    "delete": false
+                }
+            },
+            {
+                "module": 2,
+                "name": "ROLE",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": true,
+                    "update": true,
+                    "delete": false
+                }
+            },
+            {
+                "module": 3,
+                "name": "USER_LOG",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": false,
+                    "update": false,
+                    "delete": false
+                }
+            },
+            {
+                "module": 5,
+                "name": "DASH_BOARD",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": false,
+                    "update": false,
+                    "delete": false
+                }
+            },
+            {
+                "module": 6,
+                "name": "SETTING",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": false,
+                    "update": true,
+                    "delete": false
+                }
+            },
+            {
+                "module": 7,
+                "name": "MASTER",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": true,
+                    "update": true,
+                    "delete": false
+                }
+            },
+            {
+                "module": 8,
+                "name": "NOTIFICATION",
+                "permissions": {
+                    "list": true,
+                    "view": false,
+                    "insert": false,
+                    "update": true,
+                    "delete": false
+                }
+            },
+            {
+                "module": 9,
+                "name": "STATIC_PAGE",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": false,
+                    "update": true,
+                    "delete": false
+                }
+            },
+            {
+                "module": 10,
+                "name": "AccountDeleteRequest",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": false,
+                    "update": false,
+                    "delete": false
+                }
+            }
+        ],
+        "isDefault": true
+    },
+    {
+        "title": "admin",
+        "userType": 2,
+        "permissions": [
+            {
+                "module": 1,
+                "name": "USER",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": true,
+                    "update": true,
+                    "delete": false
+                }
+            },
+            {
+                "module": 2,
+                "name": "ROLE",
+                "permissions": {
+                    "list": false,
+                    "view": false,
+                    "insert": false,
+                    "update": false,
+                    "delete": false
+                }
+            },
+            {
+                "module": 3,
+                "name": "USER_LOG",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": false,
+                    "update": false,
+                    "delete": false
+                }
+            },
+            {
+                "module": 5,
+                "name": "DASH_BOARD",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": false,
+                    "update": false,
+                    "delete": false
+                }
+            },
+            {
+                "module": 6,
+                "name": "SETTING",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": false,
+                    "update": true,
+                    "delete": false
+                }
+            },
+            {
+                "module": 7,
+                "name": "MASTER",
+                "permissions": {
+                    "list": false,
+                    "view": false,
+                    "insert": false,
+                    "update": false,
+                    "delete": false
+                }
+            },
+            {
+                "module": 8,
+                "name": "NOTIFICATION",
+                "permissions": {
+                    "list": true,
+                    "view": false,
+                    "insert": false,
+                    "update": true,
+                    "delete": false
+                }
+            },
+            {
+                "module": 9,
+                "name": "STATIC_PAGE",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": false,
+                    "update": true,
+                    "delete": false
+                }
+            },
+            {
+                "module": 10,
+                "name": "AccountDeleteRequest",
+                "permissions": {
+                    "list": true,
+                    "view": true,
+                    "insert": false,
+                    "update": false,
+                    "delete": false
+                }
+            }
+        ],
+        "isDefault": true
+    }
+]

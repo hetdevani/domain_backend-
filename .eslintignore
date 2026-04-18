@@ -1,0 +1,9 @@
+node_modules
+dist
+assets
+module_templates
+InterfaceValidatorGenerator
+Seeder-Data
+client
+src(21)
+generateModule.ts

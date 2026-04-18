@@ -1,0 +1,99 @@
+import { Router } from 'express';
+import { Web{{moduleName}}Controller } from '../controllers/Web{{moduleName}}Controller';
+import { {{moduleName}}Validators } from '../validators/{{moduleName}}Validators';
+import { RouteConfig, ValidationMiddleware } from '../../common/middleware/validationMiddleware';
+import { MODULES, PERMISSIONS_TYPE } from '../../common/constants/modules';
+import PermissionMiddleware from '../../common/middleware/permissionMiddleware';
+
+class Web{{moduleName}}Routes {
+    public router: Router;
+    private routeConfigs: RouteConfig[];
+    private controller: Web{{moduleName}}Controller;
+    private permissionMiddleware: PermissionMiddleware;
+
+    constructor() {
+        this.router = Router();
+        this.controller = new Web{{moduleName}}Controller();
+        this.permissionMiddleware = new PermissionMiddleware(MODULES.{{moduleVariableUpperCase}});
+
+        this.routeConfigs = [
+            {
+                path: '/paginate',
+                method: 'post',
+                middlewares: [
+                    this.permissionMiddleware.checkPermission(PERMISSIONS_TYPE.LIST),
+                    ValidationMiddleware.validateRequest({{moduleName}}Validators.PaginateRequestSchema)
+                ],
+                handler: this.controller.paginate.bind(this.controller),
+            },
+            {
+                path: '/create',
+                method: 'post',
+                middlewares: [
+                    this.permissionMiddleware.checkPermission(PERMISSIONS_TYPE.INSERT),
+                    ValidationMiddleware.validateRequest({{moduleName}}Validators.create{{moduleName}}Schema),
+                ],
+                handler: this.controller.create.bind(this.controller),
+            },
+            {
+                path: '/:id',
+                method: 'get',
+                middlewares: [
+                    this.permissionMiddleware.checkPermission(PERMISSIONS_TYPE.VIEW),
+                    ValidationMiddleware.validateRequest({{moduleName}}Validators.idParamSchema, 'params'),
+                ],
+                handler: this.controller.getById.bind(this.controller),
+            },
+            {
+                path: '/:id',
+                method: 'put',
+                middlewares: [
+                    this.permissionMiddleware.checkPermission(PERMISSIONS_TYPE.UPDATE),
+                    ValidationMiddleware.validateRequest({{moduleName}}Validators.update{{moduleName}}Schema),
+                ],
+                handler: this.controller.update.bind(this.controller),
+            },
+            {
+                path: '/:id/activate',
+                method: 'put',
+                middlewares: [
+                    this.permissionMiddleware.checkPermission(PERMISSIONS_TYPE.UPDATE),
+                    ValidationMiddleware.validateRequest({{moduleName}}Validators.idParamSchema, 'params'),
+                ],
+                handler: this.controller.activate.bind(this.controller),
+            },
+            {
+                path: '/:id/deactivate',
+                method: 'put',
+                middlewares: [
+                    this.permissionMiddleware.checkPermission(PERMISSIONS_TYPE.UPDATE),
+                    ValidationMiddleware.validateRequest({{moduleName}}Validators.idParamSchema, 'params'),
+                ],
+                handler: this.controller.deactivate.bind(this.controller),
+            },
+            {
+                path: '/:id/soft-delete',
+                method: 'put',
+                middlewares: [
+                    this.permissionMiddleware.checkPermission(PERMISSIONS_TYPE.DELETE),
+                    ValidationMiddleware.validateRequest({{moduleName}}Validators.idParamSchema, 'params'),
+                ],
+                handler: this.controller.softDelete.bind(this.controller),
+            },
+        ];
+        this.configureRoutes();
+    }
+
+    private configureRoutes(): void {
+        this.routeConfigs.forEach((routeConfig) => {
+            const { method, path, middlewares, handler } = routeConfig;
+            if (middlewares && middlewares.length > 0) {
+                this.router[method](path, middlewares, handler);
+            } else {
+                this.router[method](path, handler);
+            }
+        });
+    }
+}
+
+export default new Web{{moduleName}}Routes().router;

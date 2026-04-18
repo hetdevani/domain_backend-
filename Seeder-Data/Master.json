@@ -1,0 +1,13 @@
+[
+    {
+        "name": "Master",
+        "code": "MASTER",
+        "group": "",
+        "description": "",
+        "isActive": true,
+        "isDeleted": false,
+        "image": "",
+        "icon": "",
+        "parentId": null
+    }
+]

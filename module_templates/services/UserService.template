@@ -1,0 +1,7 @@
+import {{moduleName}}DAO from '../dao/{{moduleName}}DAO';
+
+export class {{moduleName}}Service extends {{moduleName}}DAO {
+
+}
+
+export default new {{moduleName}}Service();

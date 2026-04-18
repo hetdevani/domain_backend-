@@ -1,0 +1,19 @@
+import { Router } from 'express';
+import Mobile{{moduleName}}Routes from './Mobile{{moduleName}}Routes';
+import Web{{moduleName}}Routes from './Web{{moduleName}}Routes';
+
+class {{moduleName}}Routes {
+    public router: Router;
+
+    constructor() {
+        this.router = Router();
+        this.configureRoutes();
+    }
+
+    private configureRoutes(): void {
+        this.router.use('/mobile/{{moduleVariable}}', Mobile{{moduleName}}Routes);
+        this.router.use('/web/{{moduleVariable}}', Web{{moduleName}}Routes);
+    }
+}
+
+export const {{moduleVariable}}Routes = new {{moduleName}}Routes().router;

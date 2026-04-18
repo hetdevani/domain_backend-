@@ -1,0 +1,21 @@
+import { Schema, model } from 'mongoose';
+import { I{{moduleName}} } from '../interfaces/I{{moduleName}}';
+
+const {{moduleName}}Schema: Schema<I{{moduleName}}> = new Schema(
+    {
+        name: { type: String, required: false },
+        password: { type: String, required: false },
+    },
+    { timestamps: true }
+);
+
+{{moduleName}}Schema.pre<I{{moduleName}}>('save', async function (next) {
+    // Additional logic after {{moduleVariable}} creation can be added here
+    next();
+});
+
+{{moduleName}}Schema.post<I{{moduleName}}>('save', function (doc) {
+    // Additional logic after {{moduleVariable}} creation can be added here
+});
+
+export const {{moduleName}} = model<I{{moduleName}}>('{{moduleName}}', {{moduleName}}Schema);
