@@ -9,9 +9,16 @@ export class RedisService {
         this.client = RedisSingleton.getInstance();
     }
 
+    private getClient(): RedisClientType {
+        if (!this.client) {
+            this.initializeClient();
+        }
+        return this.client;
+    }
+
     public async getData(key: string): Promise<any> {
         try {
-            const client = this.client;
+            const client = this.getClient();
             // logger.info('getData client ---------', { data: client });
 
             const data = await client.get(key);
@@ -26,7 +33,7 @@ export class RedisService {
 
     public async setData(key: string, data: any): Promise<boolean> {
         try {
-            const client = this.client;
+            const client = this.getClient();
             // logger.info('setData client ---------', { data: client });
 
             const dataString = JSON.stringify(data);
@@ -40,7 +47,7 @@ export class RedisService {
 
     public async removeKey(key: string): Promise<boolean> {
         try {
-            const client = this.client;
+            const client = this.getClient();
             // logger.info('removeKey client ---------', { data: client });
 
             const result = await client.del(key);
@@ -52,16 +59,13 @@ export class RedisService {
     }
 
     public async getAllDataWithKey(prefix: string): Promise<{ [key: string]: any }> {
-        if (!this.client) {
-            throw new Error('Redis client not initialized');
-        }
-
         try {
-            const keys = await this.client.keys(`${prefix}*`);
+            const client = this.getClient();
+            const keys = await client.keys(`${prefix}*`);
             const allData: { [key: string]: any } = {};
 
             for (const key of keys) {
-                const data = await this.client.get(key);
+                const data = await client.get(key);
                 allData[key] = data ? JSON.parse(data) : null;
             }
 
@@ -81,12 +85,9 @@ export class RedisService {
                 data[prefixWord] = await this.getAllDataWithKey(prefixWord);
             }
 
-            const client = this.client;
-            if (!client) {
-                throw new Error('Redis client not initialized');
-            }
+            const client = this.getClient();
 
-            await this.client.flushDb();
+            await client.flushDb();
 
             for (let prefixWord of dataToReSaveAfterClean) {
                 logger.info('data[prefixWord]', { data: data[prefixWord] });
