@@ -6,6 +6,16 @@
       "use": "@vercel/node"
     }
   ],
+  "crons": [
+    {
+      "path": "/api/internal/cron/test",
+      "schedule": "30 18 * * *"
+    },
+    {
+      "path": "/api/internal/cron/archive-activity-logs",
+      "schedule": "0 0 * * *"
+    }
+  ],
   "routes": [
     {
       "src": "/(.*)",

@@ -10,6 +10,7 @@ import { staticPageRoutes } from './modules/StaticPage/routes/indexRoutes';
 import { notificationRoutes } from './modules/Notification/routes/indexRoutes';
 import { accountDeleteRequestRoutes } from './modules/AccountDeleteRequest/routes/indexRoutes';
 import domainRoutes from './modules/domain/routes/DomainRoutes';
+import internalRoutes from './modules/internal/routes/InternalRoutes';
 
 class RouteConfig {
     public router: Router;
@@ -32,6 +33,7 @@ class RouteConfig {
         this.router.use('/', notificationRoutes);
         this.router.use('/', accountDeleteRequestRoutes);
         this.router.use('/domains', domainRoutes);
+        this.router.use('/internal', internalRoutes);
     }
 }
 
