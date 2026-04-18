@@ -18,8 +18,6 @@ class DatabaseConfig {
         this.secretsManager = new AWS.SecretsManager({ region: process.env.AWS_REGION });
         this.useTLS = process.env.IS_USE_TLS === 'true';
         this.useAWSDocumentDB = process.env.IS_USE_AWS_DOCUMENTDB === 'true';
-        this.initializeDatabase();
-        this.setupListeners();
     }
 
     public static getInstance(): DatabaseConfig {
@@ -31,6 +29,10 @@ class DatabaseConfig {
 
     public async initializeDatabase(): Promise<void> {
         try {
+            if (this.mongooseInstance.connection.readyState === 1 || this.mongooseInstance.connection.readyState === 2) {
+                return;
+            }
+
             if (this.useAWSDocumentDB) {
                 const credentials = await this.getDocumentDBCredentials();
                 const caFilePath = `/etc/ssl/certs/global-bundle.pem`;
@@ -48,9 +50,10 @@ class DatabaseConfig {
             }
 
             await this.connect();
+            this.setupListeners();
         } catch (error) {
             logger.error('Failed to initialize MongoDB connection', { error });
-            process.exit(1);
+            throw error;
         }
     }
 
@@ -78,7 +81,7 @@ class DatabaseConfig {
             logger.info('Successfully connected to MongoDB');
         } catch (error) {
             logger.error('MongoDB connection error', { error });
-            process.exit(1);
+            throw error;
         }
     }
 

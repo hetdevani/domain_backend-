@@ -4,7 +4,6 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandler } from './modules/common/middleware/errorMiddleware';
-import CryptoUtils from './modules/common/utils/cryptoUtils';
 import { PassportConfig } from './modules/auth/utils/PassportConfig';
 import { routeConfig } from './routeConfig';
 import databaseConfig from './databaseConfig';
@@ -18,12 +17,13 @@ import NotificationConfigService from './modules/common/services/NotificationCon
 import SocketManager from './modules/common/services/SocketConfigService';
 import RedisService from './modules/common/services/RedisService';
 import MessageFileToJsonConverter from './modules/common/services/MessageFileToJsonConverter';
-import CryptoService from './modules/common/middleware/cryptoService';
 import { LogMiddleware } from './modules/common/middleware/LogMiddleware';
 import RequestContext from './modules/ActivityLog/utils/RequestContext';
 import logger from './modules/common/services/WinstonLogger';
 
 dotenv.config();
+
+const isVercelServerless = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
 
 class App {
     public app: Express;
@@ -49,22 +49,18 @@ class App {
         }));
         this.app.set('trust proxy', 1);
         this.port = Number(process.env.PORT) || 1502;
-        this.initializeDatabase();
-        this.initializeRedisService();
-        this.initializeCron();
         this.initializeMiddlewares();
+        this.initializeHealthRoute();
         this.initializeContainer();
         this.initializeRoutes();
-        this.initializeSeeder();
         this.updateModelLastUpdatedAtTime();
-        this.initializeUpdatedTimeForModels();
         this.initializeImageAccess();
-        this.initializeNotificationConfig();
+        this.initializeRuntimeServices();
         // this.initializeMessageConverter();
     }
 
     private initializeDatabase() {
-        databaseConfig.initializeDatabase();
+        databaseConfig.initializeDatabase().catch(err => logger.error('Error in initializeDatabase:', { err }));
     }
 
     private initializeCron() {
@@ -85,6 +81,17 @@ class App {
 
     private initializeSeeder() {
         SeederService.seederConfig().catch(err => logger.error('Error in seederConfig:', { err }));
+    }
+
+    private initializeHealthRoute() {
+        this.app.get('/', (_req: Request, res: Response) => {
+            res.status(200).json({
+                ok: true,
+                service: 'domain-backend',
+                environment: process.env.NODE_ENV || 'development',
+                serverless: isVercelServerless,
+            });
+        });
     }
 
     private initializeMiddlewares() {
@@ -201,6 +208,21 @@ class App {
         Container.set('SeriesGeneratorService', SeriesGeneratorService);
         Container.set('MasterService', MasterService);
         Container.set('CommonService', CommonService);
+    }
+
+    private initializeRuntimeServices() {
+        this.initializeDatabase();
+
+        if (isVercelServerless) {
+            logger.info('Skipping long-running startup services in Vercel serverless runtime');
+            return;
+        }
+
+        this.initializeRedisService();
+        this.initializeCron();
+        this.initializeSeeder();
+        this.initializeUpdatedTimeForModels();
+        this.initializeNotificationConfig();
     }
 
     private initializeImageAccess() {
