@@ -3,6 +3,8 @@ import DailyRotateFile from 'winston-daily-rotate-file';
 import path from 'path';
 import RequestContext from '../../ActivityLog/utils/RequestContext';
 
+const isServerlessRuntime = process.env.VERCEL === '1' || process.env.VERCEL === 'true' || !!process.env.AWS_LAMBDA_FUNCTION_NAME;
+
 /**
  * Winston Logger Service
  * Centralized logging service for the entire application
@@ -100,7 +102,7 @@ class WinstonLogger {
         // Create transports array
         const transports: winston.transport[] = [];
 
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && !isServerlessRuntime) {
             const logsDir = path.join(process.cwd(), 'logs');
 
             // Daily rotate file transport for all logs
@@ -138,7 +140,7 @@ class WinstonLogger {
             // In production, log to files with defined retention periods
             transports.push(allLogsTransport, errorLogsTransport, httpLogsTransport);
         } else {
-            // In development, only log to console. No local files created.
+            // In development and serverless runtimes, only log to console.
             transports.push(
                 new winston.transports.Console({
                     format: consoleFormat,
